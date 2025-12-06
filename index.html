@@ -1,157 +1,139 @@
-<!DOCTYPE html>
+п»ї<!DOCTYPE html>
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Coockie</title>
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-      UnityLoader.instantiate("unityContainer", "Build/cooc.json");
-    </script>
-        <style>
-      /* Сброс отступов */
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>Unity WebGL Game | Coockie</title>
+    <style>
+      /* РЎР±СЂРѕСЃ РѕС‚СЃС‚СѓРїРѕРІ Рё Р±Р°Р·РѕРІС‹Рµ СЃС‚РёР»Рё */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
       
-      body, html {
+      html, body {
         width: 100%;
         height: 100%;
-        overflow: hidden; /* Убираем скролл */
-        background: #000; /* Черный фон на случай если игра не заполнит весь экран */
-        touch-action: manipulation; /* Улучшает работу на сенсорных экранах */
+        overflow: hidden; /* РЈР±РёСЂР°РµРј СЃРєСЂРѕР»Р» */
+        background-color: #000; /* Р§РµСЂРЅС‹Р№ С„РѕРЅ РЅР° СЃР»СѓС‡Р°Р№ Р·Р°РіСЂСѓР·РєРё */
+        font-family: Arial, sans-serif;
       }
       
-      /* Основной контейнер для WebGL */
-      .webgl-content {
-        width: 100%;
-        height: 100vh;
-        min-height: -webkit-fill-available; /* Для iOS */
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #000;
-      }
-      
-      /* Контейнер Unity */
+      /* РћСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ Unity */
       #unityContainer {
-        width: 100%;
-        height: 100%;
-        position: relative;
+        position: fixed; /* Р¤РёРєСЃРёСЂСѓРµРј РЅР° РІРµСЃСЊ СЌРєСЂР°РЅ */
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        min-height: -webkit-fill-available; /* Р”Р»СЏ iOS */
         background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
       }
       
-      /* Контейнер для canvas Unity */
+      /* Canvas Unity РІРЅСѓС‚СЂРё РєРѕРЅС‚РµР№РЅРµСЂР° */
       #unityContainer canvas {
         width: 100% !important;
         height: 100% !important;
-        object-fit: contain; /* Сохраняет пропорции игры */
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* РЎРѕС…СЂР°РЅСЏРµРј РїСЂРѕРїРѕСЂС†РёРё */
         background: #000;
       }
       
-      /* Для ландшафтной ориентации на мобильных */
+      /* Р”Р»СЏ РґРµСЃРєС‚РѕРїРѕРІ - РѕРіСЂР°РЅРёС‡РёРІР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ */
+      @media (min-width: 1024px) and (min-height: 768px) {
+        #unityContainer {
+          max-width: 100vw;
+          max-height: 100vh;
+        }
+      }
+      
+      /* Р”Р»СЏ РїР»Р°РЅС€РµС‚РѕРІ Рё РјРѕР±РёР»СЊРЅС‹С… РІ Р»Р°РЅРґС€Р°С„С‚РЅРѕР№ РѕСЂРёРµРЅС‚Р°С†РёРё */
       @media (orientation: landscape) and (max-height: 600px) {
         #unityContainer canvas {
-          object-fit: cover; /* Заполняет экран в ландшафте */
+          object-fit: cover; /* Р—Р°РїРѕР»РЅСЏРµРј СЌРєСЂР°РЅ РІ Р»Р°РЅРґС€Р°С„С‚Рµ */
         }
       }
       
-      /* Для десктопов и больших экранов */
-      @media (min-width: 1024px) {
-        .webgl-content {
-          max-width: 100%;
-          max-height: 100vh;
-        }
-        
+      /* Р”Р»СЏ РјРѕР±РёР»СЊРЅС‹С… РІ РїРѕСЂС‚СЂРµС‚РЅРѕР№ РѕСЂРёРµРЅС‚Р°С†РёРё */
+      @media (orientation: portrait) and (max-width: 768px) {
         #unityContainer {
-          max-width: 100%;
-          max-height: 100vh;
+          height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
         }
       }
       
-      /* Для планшетов */
-      @media (min-width: 768px) and (max-width: 1023px) {
-        .webgl-content {
-          height: calc(100vh - 20px);
-          padding: 10px 0;
-        }
-      }
-      
-      /* Для мобильных устройств */
-      @media (max-width: 767px) {
-        body {
-          position: fixed; /* Фиксируем для iOS */
-          width: 100%;
-          height: 100%;
-        }
-        
-        .webgl-content {
-          height: 100vh;
-          height: -webkit-fill-available;
-          height: fill-available;
-        }
-        
-        /* Скрываем элементы управления по умолчанию на мобильных */
-        #unityContainer + div {
-          font-size: 12px !important;
-        }
-      }
-      
-      /* Для очень маленьких экранов */
-      @media (max-width: 320px) {
-        .webgl-content {
-          height: 100vh;
-        }
-      }
-      
-      /* Загрузочный экран (если используется) */
-      .loading {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+      /* РћРІРµСЂР»РµР№ Р·Р°РіСЂСѓР·РєРё Рё СЃРѕРѕР±С‰РµРЅРёР№ */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         color: white;
-        font-family: Arial, sans-serif;
-        text-align: center;
         z-index: 1000;
+        transition: opacity 0.3s;
       }
       
-      /* Оверлей для сообщений на мобильных */
-      .mobile-overlay {
+      .loading-progress {
+        width: 80%;
+        max-width: 300px;
+        height: 20px;
+        background: #333;
+        border-radius: 10px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+      
+      .loading-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        width: 0%;
+        transition: width 0.3s;
+      }
+      
+      .loading-text {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #aaa;
+      }
+      
+      .orientation-warning {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.9);
+        background: rgba(0, 0, 0, 0.95);
         color: white;
-        z-index: 9999;
-        text-align: center;
-        padding: 20px;
+        z-index: 2000;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
       }
       
-      .mobile-overlay.active {
+      .orientation-warning.active {
         display: flex;
-      }
-      
-      .mobile-overlay h2 {
-        margin-bottom: 20px;
-        font-size: 24px;
-      }
-      
-      .mobile-overlay p {
-        margin-bottom: 15px;
-        font-size: 16px;
-        line-height: 1.5;
       }
       
       .rotate-icon {
@@ -165,129 +147,423 @@
         100% { transform: rotate(90deg); }
       }
       
-      /* Для устройств с вырезом (notch) */
-      @supports (padding: max(0px)) {
-        .webgl-content {
-          padding-left: max(0px, env(safe-area-inset-left));
-          padding-right: max(0px, env(safe-area-inset-right));
-          padding-top: max(0px, env(safe-area-inset-top));
-          padding-bottom: max(0px, env(safe-area-inset-bottom));
+      /* РљРЅРѕРїРєР° РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ СЂРµР¶РёРјР° */
+      .fullscreen-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid white;
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.3s;
+      }
+      
+      .fullscreen-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      .fullscreen-button.hidden {
+        display: none;
+      }
+      
+      /* РРЅРґРёРєР°С‚РѕСЂ РєР°СЃР°РЅРёСЏ РґР»СЏ РјРѕР±РёР»СЊРЅС‹С… */
+      .touch-indicator {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        z-index: 10;
+        display: none;
+      }
+      
+      .touch-indicator.active {
+        display: block;
+      }
+      
+      /* РЎРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ */
+      .error-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 90%;
+        z-index: 3000;
+        display: none;
+      }
+      
+      .error-message.active {
+        display: block;
+      }
+      
+      .retry-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      
+      /* РђРґР°РїС‚Р°С†РёСЏ С€СЂРёС„С‚РѕРІ */
+      @media (max-width: 768px) {
+        .loading-text {
+          font-size: 12px;
+        }
+        
+        .fullscreen-button {
+          width: 40px;
+          height: 40px;
+          font-size: 20px;
+          bottom: 15px;
+          right: 15px;
         }
       }
     </style>
-  </head>
-  <body>
-    <div id="unityContainer" ></div>
-     <script>
-      // Адаптивная инициализация Unity
+    
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      // Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ
+      var unityInstance = null;
+      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      
+      // Р¤СѓРЅРєС†РёСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Unity СЃ Р°РґР°РїС‚Р°С†РёРµР№
       function initializeUnity() {
-        // Определяем параметры для разных устройств
-        var config = {
-          onProgress: UnityProgress,
-          Module: {
-            // Оптимизация для мобильных
-            onRuntimeInitialized: function() {
-              console.log("Unity runtime initialized");
-              // Скрываем мобильный оверлей после загрузки
-              hideMobileOverlay();
-            }
+        try {
+          // РџРѕРєР°Р·С‹РІР°РµРј Р·Р°РіСЂСѓР·РѕС‡РЅС‹Р№ СЌРєСЂР°РЅ
+          showLoadingScreen();
+          
+          // РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РґР»СЏ СЂР°Р·РЅС‹С… СѓСЃС‚СЂРѕР№СЃС‚РІ
+          var config = {
+            onProgress: UnityProgress,
+            Module: {
+              onRuntimeInitialized: function() {
+                console.log('Unity runtime initialized');
+                hideLoadingScreen();
+                setupEventListeners();
+                checkOrientation();
+              }
+            },
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "Coockie",
+            productVersion: "1.0"
+          };
+          
+          // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ РјРѕР±РёР»СЊРЅС‹С…
+          if (isMobile) {
+            config.devicePixelRatio = window.devicePixelRatio || 1;
+            console.log("Mobile device detected, DPR:", config.devicePixelRatio);
           }
-        };
-        
-        // Добавляем параметры для мобильных устройств
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-          config.devicePixelRatio = window.devicePixelRatio || 1;
-          console.log("Mobile device detected, devicePixelRatio:", config.devicePixelRatio);
+          
+          // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Unity
+          unityInstance = UnityLoader.instantiate("unityContainer", "Build/cooc.json", config);
+          
+          // РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє Р·Р°РіСЂСѓР·РєРё
+          setTimeout(function() {
+            var canvas = document.querySelector('#unityContainer canvas');
+            if (!canvas) {
+              showError("Failed to load game. Please check your connection and try again.");
+            }
+          }, 10000); // 10 СЃРµРєСѓРЅРґ С‚Р°Р№РјР°СѓС‚
+          
+        } catch (error) {
+          console.error("Unity initialization error:", error);
+          showError("Error loading game: " + error.message);
         }
-        
-        // Запускаем Unity
-        var unityInstance = UnityLoader.instantiate("unityContainer", "Build/GameCenter.json", config);
-        
-        // Обработка изменения размера окна
-        window.addEventListener('resize', function() {
-          handleResize();
-        });
-        
-        // Обработка ориентации устройства
-        window.addEventListener('orientationchange', function() {
-          setTimeout(handleResize, 100);
-          checkOrientation();
-        });
-        
-        // Проверяем ориентацию при загрузке
-        setTimeout(checkOrientation, 500);
-        setTimeout(handleResize, 100);
-        
-        return unityInstance;
       }
       
-      // Обработчик изменения размера
+      // РџСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё Unity
+      function UnityProgress(gameInstance, progress) {
+        var progressBar = document.querySelector('.loading-progress-bar');
+        var loadingText = document.querySelector('.loading-text');
+        
+        if (progressBar) {
+          progressBar.style.width = (progress * 100) + "%";
+        }
+        
+        if (loadingText) {
+          if (progress === 1) {
+            loadingText.textContent = "Starting game...";
+          } else {
+            loadingText.textContent = "Loading: " + Math.round(progress * 100) + "%";
+          }
+        }
+      }
+      
+      // РџРѕРєР°Р·Р°С‚СЊ/СЃРєСЂС‹С‚СЊ Р·Р°РіСЂСѓР·РѕС‡РЅС‹Р№ СЌРєСЂР°РЅ
+      function showLoadingScreen() {
+        var overlay = document.querySelector('.loading-overlay');
+        if (overlay) overlay.style.opacity = "1";
+      }
+      
+      function hideLoadingScreen() {
+        var overlay = document.querySelector('.loading-overlay');
+        if (overlay) {
+          overlay.style.opacity = "0";
+          setTimeout(function() {
+            overlay.style.display = "none";
+          }, 300);
+        }
+      }
+      
+      // РџСЂРѕРІРµСЂРєР° РѕСЂРёРµРЅС‚Р°С†РёРё
+      function checkOrientation() {
+        var warning = document.querySelector('.orientation-warning');
+        if (!warning) return;
+        
+        // РџРѕРєР°Р·С‹РІР°РµРј РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ С‚РѕР»СЊРєРѕ РЅР° РјРѕР±РёР»СЊРЅС‹С… РІ РїРѕСЂС‚СЂРµС‚РЅРѕР№ РѕСЂРёРµРЅС‚Р°С†РёРё
+        if (isMobile && window.innerHeight > window.innerWidth) {
+          warning.classList.add('active');
+        } else {
+          warning.classList.remove('active');
+        }
+      }
+      
+      // РќР°СЃС‚СЂРѕР№РєР° РѕР±СЂР°Р±РѕС‚С‡РёРєРѕРІ СЃРѕР±С‹С‚РёР№
+      function setupEventListeners() {
+        // РР·РјРµРЅРµРЅРёРµ СЂР°Р·РјРµСЂР° РѕРєРЅР°
+        window.addEventListener('resize', handleResize);
+        
+        // РР·РјРµРЅРµРЅРёРµ РѕСЂРёРµРЅС‚Р°С†РёРё
+        window.addEventListener('orientationchange', function() {
+          setTimeout(function() {
+            handleResize();
+            checkOrientation();
+          }, 100);
+        });
+        
+        // РџРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј
+        var fullscreenBtn = document.querySelector('.fullscreen-button');
+        if (fullscreenBtn) {
+          fullscreenBtn.addEventListener('click', toggleFullscreen);
+        }
+        
+        // РћР±РЅР°СЂСѓР¶РµРЅРёРµ РєР°СЃР°РЅРёСЏ
+        if (isMobile) {
+          document.addEventListener('touchstart', showTouchIndicator);
+          document.addEventListener('touchend', hideTouchIndicator);
+        }
+        
+        // РџСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёРµ РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёСЏ РЅР° РјРѕР±РёР»СЊРЅС‹С…
+        if (isMobile) {
+          document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) {
+              e.preventDefault();
+            }
+          }, { passive: false });
+          
+          document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+          });
+        }
+        
+        // Р”Р»СЏ iOS - РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёРµ bounce СЌС„С„РµРєС‚Р°
+        if (isIOS) {
+          document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) {
+              e.preventDefault();
+            }
+          }, { passive: false });
+        }
+      }
+      
+      // РћР±СЂР°Р±РѕС‚РєР° РёР·РјРµРЅРµРЅРёСЏ СЂР°Р·РјРµСЂР°
       function handleResize() {
         var container = document.getElementById('unityContainer');
-        if (container && container.children.length > 0) {
+        if (container) {
           var canvas = container.querySelector('canvas');
           if (canvas) {
-            // Обновляем размер canvas
+            // РћР±РЅРѕРІР»СЏРµРј СЂР°Р·РјРµСЂС‹ canvas
             canvas.style.width = '100%';
             canvas.style.height = '100%';
+            
+            // РЈРІРµРґРѕРјР»СЏРµРј Unity РѕР± РёР·РјРµРЅРµРЅРёРё СЂР°Р·РјРµСЂР°
+            if (unityInstance && unityInstance.Module && unityInstance.Module.Screen) {
+              try {
+                unityInstance.Module.Screen.SetResolution(
+                  container.offsetWidth,
+                  container.offsetHeight,
+                  false,
+                  0
+                );
+              } catch (e) {
+                console.log("Could not set resolution:", e);
+              }
+            }
           }
         }
       }
       
-      // Проверка ориентации устройства
-      function checkOrientation() {
-        var overlay = document.getElementById('mobileOverlay');
-        if (!overlay) return;
-        
-        // Показываем оверлей только на мобильных в портретной ориентации
-        if (window.innerHeight > window.innerWidth && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-          overlay.classList.add('active');
+      // РџРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј
+      function toggleFullscreen() {
+        var container = document.getElementById('unityContainer');
+        if (!document.fullscreenElement) {
+          if (container.requestFullscreen) {
+            container.requestFullscreen();
+          } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+          } else if (container.msRequestFullscreen) {
+            container.msRequestFullscreen();
+          }
         } else {
-          overlay.classList.remove('active');
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+          }
         }
       }
       
-      // Скрытие мобильного оверлея
-      function hideMobileOverlay() {
-        var overlay = document.getElementById('mobileOverlay');
-        if (overlay) {
-          overlay.classList.remove('active');
+      // РџРѕРєР°Р·Р°С‚СЊ РёРЅРґРёРєР°С‚РѕСЂ РєР°СЃР°РЅРёСЏ
+      function showTouchIndicator() {
+        var indicator = document.querySelector('.touch-indicator');
+        if (indicator) {
+          indicator.classList.add('active');
+          setTimeout(hideTouchIndicator, 1000);
         }
       }
       
-      // Предотвращаем масштабирование на мобильных (опционально)
-      document.addEventListener('touchmove', function(e) {
-        if(e.scale !== 1) {
-          e.preventDefault();
+      function hideTouchIndicator() {
+        var indicator = document.querySelector('.touch-indicator');
+        if (indicator) {
+          indicator.classList.remove('active');
         }
-      }, { passive: false });
+      }
       
-      document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-      });
+      // РџРѕРєР°Р·Р°С‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ
+      function showError(message) {
+        var errorDiv = document.querySelector('.error-message');
+        if (errorDiv) {
+          errorDiv.querySelector('p').textContent = message;
+          errorDiv.classList.add('active');
+        }
+      }
       
-      // Запускаем Unity после загрузки страницы
+      // РџРµСЂРµР·Р°РіСЂСѓР·РєР° РёРіСЂС‹
+      function retryGame() {
+        var errorDiv = document.querySelector('.error-message');
+        if (errorDiv) {
+          errorDiv.classList.remove('active');
+        }
+        
+        // РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј СЃС‚СЂР°РЅРёС†Сѓ
+        location.reload();
+      }
+      
+      // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРё Р·Р°РіСЂСѓР·РєРµ СЃС‚СЂР°РЅРёС†С‹
       window.addEventListener('load', function() {
+        // РЎРѕР·РґР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЌР»РµРјРµРЅС‚С‹ DOM
+        createDynamicElements();
+        
+        // Р—Р°РїСѓСЃРєР°РµРј Unity
         setTimeout(initializeUnity, 100);
+        
+        // РџРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° РѕСЂРёРµРЅС‚Р°С†РёРё
+        checkOrientation();
+        
+        // РЎРєСЂС‹РІР°РµРј Р°РґСЂРµСЃРЅСѓСЋ СЃС‚СЂРѕРєСѓ РЅР° РјРѕР±РёР»СЊРЅС‹С…
+        if (isMobile) {
+          window.scrollTo(0, 1);
+        }
       });
       
-      // Для iOS - предотвращаем bounce эффект
-      document.addEventListener('touchstart', function(e) {
-        if (e.touches.length > 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
+      // РЎРѕР·РґР°РЅРёРµ РґРёРЅР°РјРёС‡РµСЃРєРёС… СЌР»РµРјРµРЅС‚РѕРІ
+      function createDynamicElements() {
+        // Р—Р°РіСЂСѓР·РѕС‡РЅС‹Р№ СЌРєСЂР°РЅ
+        var loadingOverlay = document.createElement('div');
+        loadingOverlay.className = 'loading-overlay';
+        loadingOverlay.innerHTML = `
+          <h1 style="color: white; margin-bottom: 20px;">Loading Game</h1>
+          <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+          </div>
+          <div class="loading-text">Initializing...</div>
+        `;
+        document.body.appendChild(loadingOverlay);
+        
+        // РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ РѕР± РѕСЂРёРµРЅС‚Р°С†РёРё
+        var orientationWarning = document.createElement('div');
+        orientationWarning.className = 'orientation-warning';
+        orientationWarning.innerHTML = `
+          <div class="rotate-icon">в†»</div>
+          <h2>Please Rotate Device</h2>
+          <p>For the best experience, please rotate your device to landscape mode</p>
+        `;
+        document.body.appendChild(orientationWarning);
+        
+        // РљРЅРѕРїРєР° РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ СЂРµР¶РёРјР°
+        var fullscreenBtn = document.createElement('div');
+        fullscreenBtn.className = 'fullscreen-button';
+        fullscreenBtn.innerHTML = 'в›¶';
+        fullscreenBtn.title = 'Toggle Fullscreen';
+        document.body.appendChild(fullscreenBtn);
+        
+        // РРЅРґРёРєР°С‚РѕСЂ РєР°СЃР°РЅРёСЏ
+        var touchIndicator = document.createElement('div');
+        touchIndicator.className = 'touch-indicator';
+        touchIndicator.textContent = 'Touch Controls Active';
+        document.body.appendChild(touchIndicator);
+        
+        // РЎРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ
+        var errorMessage = document.createElement('div');
+        errorMessage.className = 'error-message';
+        errorMessage.innerHTML = `
+          <h2>Error</h2>
+          <p></p>
+          <button class="retry-button" onclick="retryGame()">Retry</button>
+        `;
+        document.body.appendChild(errorMessage);
+      }
       
-      document.addEventListener('touchend', function(e) {
-        if (e.touches.length > 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
+      // РћР±СЂР°Р±РѕС‚С‡РёРєРё РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ СЂРµР¶РёРјР°
+      document.addEventListener('fullscreenchange', updateFullscreenButton);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+      document.addEventListener('msfullscreenchange', updateFullscreenButton);
       
+      function updateFullscreenButton() {
+        var btn = document.querySelector('.fullscreen-button');
+        if (btn) {
+          if (document.fullscreenElement || 
+              document.webkitFullscreenElement || 
+              document.msFullscreenElement) {
+            btn.innerHTML = 'вњ•';
+            btn.title = 'Exit Fullscreen';
+          } else {
+            btn.innerHTML = 'в›¶';
+            btn.title = 'Enter Fullscreen';
+          }
+        }
+      }
     </script>
+  </head>
+  
+  <body>
+    <!-- РћСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµР№РЅРµСЂ Unity -->
+    <div id="unityContainer"></div>
     
-    <!-- Запасной скрипт, если основной не сработал -->
-    <script>
+    <!-- Р’СЃРµ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ СЃРѕР·РґР°СЋС‚СЃСЏ РґРёРЅР°РјРёС‡РµСЃРєРё -->
   </body>
-
 </html>
