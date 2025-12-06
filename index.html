@@ -51,20 +51,9 @@
         background: #000;
       }
       
-      /* Контейнер для canvas Unity */
-      #unityContainer canvas {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: contain; /* Сохраняет пропорции игры */
-        background: #000;
-      }
+   
       
-      /* Для ландшафтной ориентации на мобильных */
-      @media (orientation: landscape) and (max-height: 600px) {
-        #unityContainer canvas {
-          object-fit: cover; /* Заполняет экран в ландшафте */
-        }
-      }
+      
       
       /* Для десктопов и больших экранов */
       @media (min-width: 1024px) {
@@ -236,19 +225,7 @@
         return unityInstance;
       }
       
-      // Обработчик изменения размера
-      function handleResize() {
-        var container = document.getElementById('unityContainer');
-        if (container && container.children.length > 0) {
-          var canvas = container.querySelector('canvas');
-          if (canvas) {
-            // Обновляем размер canvas
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-          }
-        }
-      }
-      
+    
       // Проверка ориентации устройства
       function checkOrientation() {
         var overlay = document.getElementById('mobileOverlay');
