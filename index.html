@@ -52,19 +52,8 @@
       }
       
       /* Контейнер для canvas Unity */
-      #unityContainer canvas {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: contain; /* Сохраняет пропорции игры */
-        background: #000;
-      }
-      
-      /* Для ландшафтной ориентации на мобильных */
-      @media (orientation: landscape) and (max-height: 600px) {
-        #unityContainer canvas {
-          object-fit: cover; /* Заполняет экран в ландшафте */
-        }
-      }
+
+  
       
       /* Для десктопов и больших экранов */
       @media (min-width: 1024px) {
