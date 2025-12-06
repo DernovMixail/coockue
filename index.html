@@ -1,4 +1,4 @@
-п»ї<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
@@ -7,10 +7,10 @@
     <title>Unity WebGL Player | Coockie</title>
     <script src="Build/UnityLoader.js"></script>
     <script>
-      // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Unity
+      // Инициализация Unity
       var unityInstance = UnityLoader.instantiate("unityContainer", "Build/cooc.json");
       
-      // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ Р°РґР°РїС‚Р°С†РёСЏ СЂР°Р·РјРµСЂР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ Рё РёР·РјРµРЅРµРЅРёРё РѕРєРЅР°
+      // Автоматическая адаптация размера при загрузке и изменении окна
       window.addEventListener('load', resizeUnity);
       window.addEventListener('resize', resizeUnity);
       window.addEventListener('orientationchange', resizeUnity);
@@ -20,7 +20,7 @@
         var canvas = container.querySelector('canvas');
         
         if (canvas) {
-          // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅР° РІРµСЃСЊ СЌРєСЂР°РЅ
+          // Устанавливаем на весь экран
           container.style.width = '100vw';
           container.style.height = '100vh';
           
@@ -31,14 +31,14 @@
       }
     </script>
     <style>
-      /* РЎР±СЂРѕСЃ РѕС‚СЃС‚СѓРїРѕРІ */
+      /* Сброс отступов */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
       
-      /* РќР° РІРµСЃСЊ СЌРєСЂР°РЅ РІСЃРµРіРґР° */
+      /* На весь экран всегда */
       html, body {
         width: 100%;
         height: 100%;
@@ -46,14 +46,14 @@
         background: black;
       }
       
-      /* РљРѕРЅС‚РµР№РЅРµСЂ Unity РІСЃРµРіРґР° РЅР° РІРµСЃСЊ СЌРєСЂР°РЅ */
+      /* Контейнер Unity всегда на весь экран */
       #unityContainer {
         width: 100vw;
         height: 100vh;
         background: black;
       }
       
-      /* Canvas Р·Р°РЅРёРјР°РµС‚ РІРµСЃСЊ РєРѕРЅС‚РµР№РЅРµСЂ */
+      /* Canvas занимает весь контейнер */
       #unityContainer canvas {
         width: 100% !important;
         height: 100% !important;
