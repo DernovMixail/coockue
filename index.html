@@ -3,539 +3,66 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="HandheldFriendly" content="true">
-    <meta name="MobileOptimized" content="width">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <title>Unity WebGL Game | Coockie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unity WebGL Player | Coockie</title>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      // Инициализация Unity
+      var unityInstance = UnityLoader.instantiate("unityContainer", "Build/cooc.json");
+      
+      // Автоматическая адаптация размера при загрузке и изменении окна
+      window.addEventListener('load', resizeUnity);
+      window.addEventListener('resize', resizeUnity);
+      window.addEventListener('orientationchange', resizeUnity);
+      
+      function resizeUnity() {
+        var container = document.getElementById('unityContainer');
+        var canvas = container.querySelector('canvas');
+        
+        if (canvas) {
+          // Устанавливаем на весь экран
+          container.style.width = '100vw';
+          container.style.height = '100vh';
+          
+          canvas.style.width = '100%';
+          canvas.style.height = '100%';
+          canvas.style.objectFit = 'contain';
+        }
+      }
+    </script>
     <style>
-      /* Сброс отступов и базовые стили */
+      /* Сброс отступов */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
       
+      /* На весь экран всегда */
       html, body {
         width: 100%;
         height: 100%;
-        overflow: hidden; /* Убираем скролл */
-        background-color: #000; /* Черный фон на случай загрузки */
-        font-family: Arial, sans-serif;
+        overflow: hidden;
+        background: black;
       }
       
-      /* Основной контейнер для Unity */
+      /* Контейнер Unity всегда на весь экран */
       #unityContainer {
-        position: fixed; /* Фиксируем на весь экран */
-        top: 0;
-        left: 0;
         width: 100vw;
         height: 100vh;
-        min-height: -webkit-fill-available; /* Для iOS */
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1;
+        background: black;
       }
       
-      /* Canvas Unity внутри контейнера */
+      /* Canvas занимает весь контейнер */
       #unityContainer canvas {
         width: 100% !important;
         height: 100% !important;
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain; /* Сохраняем пропорции */
-        background: #000;
-      }
-      
-      /* Для десктопов - ограничиваем максимальный размер */
-      @media (min-width: 1024px) and (min-height: 768px) {
-        #unityContainer {
-          max-width: 100vw;
-          max-height: 100vh;
-        }
-      }
-      
-      /* Для планшетов и мобильных в ландшафтной ориентации */
-      @media (orientation: landscape) and (max-height: 600px) {
-        #unityContainer canvas {
-          object-fit: cover; /* Заполняем экран в ландшафте */
-        }
-      }
-      
-      /* Для мобильных в портретной ориентации */
-      @media (orientation: portrait) and (max-width: 768px) {
-        #unityContainer {
-          height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-          padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
-        }
-      }
-      
-     
-      
-      .loading-progress {
-        width: 80%;
-        max-width: 300px;
-        height: 20px;
-        background: #333;
-        border-radius: 10px;
-        margin: 20px 0;
-        overflow: hidden;
-      }
-      
-      .loading-progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #4CAF50, #8BC34A);
-        width: 0%;
-        transition: width 0.3s;
-      }
-      
-      .loading-text {
-        margin-top: 20px;
-        font-size: 14px;
-        color: #aaa;
-      }
-      
-      .orientation-warning {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        color: white;
-        z-index: 2000;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 20px;
-      }
-      
-      .orientation-warning.active {
-        display: flex;
-      }
-      
-      .rotate-icon {
-        font-size: 48px;
-        margin: 20px 0;
-        animation: rotate 2s infinite;
-      }
-      
-      @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(90deg); }
-      }
-      
-      /* Кнопка полноэкранного режима */
-      .fullscreen-button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.7);
-        border: 2px solid white;
-        border-radius: 50%;
-        color: white;
-        font-size: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.3s;
-      }
-      
-      .fullscreen-button:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-      
-      .fullscreen-button.hidden {
-        display: none;
-      }
-      
-      /* Индикатор касания для мобильных */
-      .touch-indicator {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 10px 15px;
-        border-radius: 20px;
-        font-size: 12px;
-        z-index: 10;
-        display: none;
-      }
-      
-      .touch-indicator.active {
-        display: block;
-      }
-      
-      /* Сообщение об ошибке */
-      .error-message {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 30px;
-        border-radius: 10px;
-        text-align: center;
-        max-width: 90%;
-        z-index: 3000;
-        display: none;
-      }
-      
-      .error-message.active {
-        display: block;
-      }
-      
-      .retry-button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-      
-      /* Адаптация шрифтов */
-      @media (max-width: 768px) {
-        .loading-text {
-          font-size: 12px;
-        }
-        
-        .fullscreen-button {
-          width: 40px;
-          height: 40px;
-          font-size: 20px;
-          bottom: 15px;
-          right: 15px;
-        }
+        object-fit: contain;
+        background: black;
       }
     </style>
-    
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-      // Глобальные переменные
-      var unityInstance = null;
-      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      
-      // Функция инициализации Unity с адаптацией
-      function initializeUnity() {
-        try {
-          // Показываем загрузочный экран
-          showLoadingScreen();
-          
-          // Конфигурация для разных устройств
-          var config = {
-            onProgress: UnityProgress,
-            Module: {
-              onRuntimeInitialized: function() {
-                console.log('Unity runtime initialized');
-                hideLoadingScreen();
-                setupEventListeners();
-                checkOrientation();
-              }
-            },
-            streamingAssetsUrl: "StreamingAssets",
-            companyName: "DefaultCompany",
-            productName: "Coockie",
-            productVersion: "1.0"
-          };
-          
-          // Дополнительные настройки для мобильных
-          if (isMobile) {
-            config.devicePixelRatio = window.devicePixelRatio || 1;
-            console.log("Mobile device detected, DPR:", config.devicePixelRatio);
-          }
-          
-          // Инициализация Unity
-          unityInstance = UnityLoader.instantiate("unityContainer", "Build/cooc.json", config);
-          
-          // Обработка ошибок загрузки
-          setTimeout(function() {
-            var canvas = document.querySelector('#unityContainer canvas');
-            if (!canvas) {
-              showError("Failed to load game. Please check your connection and try again.");
-            }
-          }, 10000); // 10 секунд таймаут
-          
-        } catch (error) {
-          console.error("Unity initialization error:", error);
-          showError("Error loading game: " + error.message);
-        }
-      }
-      
-      // Прогресс загрузки Unity
-      function UnityProgress(gameInstance, progress) {
-        var progressBar = document.querySelector('.loading-progress-bar');
-        var loadingText = document.querySelector('.loading-text');
-        
-        if (progressBar) {
-          progressBar.style.width = (progress * 100) + "%";
-        }
-        
-        if (loadingText) {
-          if (progress === 1) {
-            loadingText.textContent = "Starting game...";
-          } else {
-            loadingText.textContent = "Loading: " + Math.round(progress * 100) + "%";
-          }
-        }
-      }
-      
-      // Показать/скрыть загрузочный экран
-      function showLoadingScreen() {
-        var overlay = document.querySelector('.loading-overlay');
-        if (overlay) overlay.style.opacity = "1";
-      }
-      
-      function hideLoadingScreen() {
-        var overlay = document.querySelector('.loading-overlay');
-        if (overlay) {
-          overlay.style.opacity = "0";
-          setTimeout(function() {
-            overlay.style.display = "none";
-          }, 300);
-        }
-      }
-      
-
-      
-      // Настройка обработчиков событий
-      function setupEventListeners() {
-        // Изменение размера окна
-        window.addEventListener('resize', handleResize);
-        
-        // Изменение ориентации
-        window.addEventListener('orientationchange', function() {
-          setTimeout(function() {
-            handleResize();
-            checkOrientation();
-          }, 100);
-        });
-        
-        // Полноэкранный режим
-        var fullscreenBtn = document.querySelector('.fullscreen-button');
-        if (fullscreenBtn) {
-          fullscreenBtn.addEventListener('click', toggleFullscreen);
-        }
-        
-        // Обнаружение касания
-        if (isMobile) {
-          document.addEventListener('touchstart', showTouchIndicator);
-          document.addEventListener('touchend', hideTouchIndicator);
-        }
-        
-        // Предотвращение масштабирования на мобильных
-        if (isMobile) {
-          document.addEventListener('touchmove', function(e) {
-            if (e.scale !== 1) {
-              e.preventDefault();
-            }
-          }, { passive: false });
-          
-          document.addEventListener('gesturestart', function(e) {
-            e.preventDefault();
-          });
-        }
-        
-        // Для iOS - предотвращение bounce эффекта
-        if (isIOS) {
-          document.addEventListener('touchmove', function(e) {
-            if (e.touches.length > 1) {
-              e.preventDefault();
-            }
-          }, { passive: false });
-        }
-      }
-      
-      // Обработка изменения размера
-      function handleResize() {
-        var container = document.getElementById('unityContainer');
-        if (container) {
-          var canvas = container.querySelector('canvas');
-          if (canvas) {
-            // Обновляем размеры canvas
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-            
-            // Уведомляем Unity об изменении размера
-            if (unityInstance && unityInstance.Module && unityInstance.Module.Screen) {
-              try {
-                unityInstance.Module.Screen.SetResolution(
-                  container.offsetWidth,
-                  container.offsetHeight,
-                  false,
-                  0
-                );
-              } catch (e) {
-                console.log("Could not set resolution:", e);
-              }
-            }
-          }
-        }
-      }
-      
-      // Полноэкранный режим
-      function toggleFullscreen() {
-        var container = document.getElementById('unityContainer');
-        if (!document.fullscreenElement) {
-          if (container.requestFullscreen) {
-            container.requestFullscreen();
-          } else if (container.webkitRequestFullscreen) {
-            container.webkitRequestFullscreen();
-          } else if (container.msRequestFullscreen) {
-            container.msRequestFullscreen();
-          }
-        } else {
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-          }
-        }
-      }
-      
-      // Показать индикатор касания
-      function showTouchIndicator() {
-        var indicator = document.querySelector('.touch-indicator');
-        if (indicator) {
-          indicator.classList.add('active');
-          setTimeout(hideTouchIndicator, 1000);
-        }
-      }
-      
-      function hideTouchIndicator() {
-        var indicator = document.querySelector('.touch-indicator');
-        if (indicator) {
-          indicator.classList.remove('active');
-        }
-      }
-      
-      // Показать сообщение об ошибке
-      function showError(message) {
-        var errorDiv = document.querySelector('.error-message');
-        if (errorDiv) {
-          errorDiv.querySelector('p').textContent = message;
-          errorDiv.classList.add('active');
-        }
-      }
-      
-      // Перезагрузка игры
-      function retryGame() {
-        var errorDiv = document.querySelector('.error-message');
-        if (errorDiv) {
-          errorDiv.classList.remove('active');
-        }
-        
-        // Перезагружаем страницу
-        location.reload();
-      }
-      
-      // Инициализация при загрузке страницы
-      window.addEventListener('load', function() {
-        // Создаем необходимые элементы DOM
-        createDynamicElements();
-        
-        // Запускаем Unity
-        setTimeout(initializeUnity, 100);
-        
-
-        // Скрываем адресную строку на мобильных
-        if (isMobile) {
-          window.scrollTo(0, 1);
-        }
-      });
-      
-      // Создание динамических элементов
-      function createDynamicElements() {
-        // Загрузочный экран
-        var loadingOverlay = document.createElement('div');
-        loadingOverlay.className = 'loading-overlay';
-        loadingOverlay.innerHTML = `
-          <h1 style="color: white; margin-bottom: 20px;">Loading Game</h1>
-          <div class="loading-progress">
-            <div class="loading-progress-bar"></div>
-          </div>
-          <div class="loading-text">Initializing...</div>
-        `;
-        document.body.appendChild(loadingOverlay);
-        
-        // Предупреждение об ориентации
-        var orientationWarning = document.createElement('div');
-        orientationWarning.className = 'orientation-warning';
-        orientationWarning.innerHTML = `
-          <div class="rotate-icon">↻</div>
-          <h2>Please Rotate Device</h2>
-          <p>For the best experience, please rotate your device to landscape mode</p>
-        `;
-        document.body.appendChild(orientationWarning);
-        
-        // Кнопка полноэкранного режима
-        var fullscreenBtn = document.createElement('div');
-        fullscreenBtn.className = 'fullscreen-button';
-        fullscreenBtn.innerHTML = '⛶';
-        fullscreenBtn.title = 'Toggle Fullscreen';
-        document.body.appendChild(fullscreenBtn);
-        
-        // Индикатор касания
-        var touchIndicator = document.createElement('div');
-        touchIndicator.className = 'touch-indicator';
-        touchIndicator.textContent = 'Touch Controls Active';
-        document.body.appendChild(touchIndicator);
-        
-        // Сообщение об ошибке
-        var errorMessage = document.createElement('div');
-        errorMessage.className = 'error-message';
-        errorMessage.innerHTML = `
-          <h2>Error</h2>
-          <p></p>
-          <button class="retry-button" onclick="retryGame()">Retry</button>
-        `;
-        document.body.appendChild(errorMessage);
-      }
-      
-      // Обработчики полноэкранного режима
-      document.addEventListener('fullscreenchange', updateFullscreenButton);
-      document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-      document.addEventListener('msfullscreenchange', updateFullscreenButton);
-      
-      function updateFullscreenButton() {
-        var btn = document.querySelector('.fullscreen-button');
-        if (btn) {
-          if (document.fullscreenElement || 
-              document.webkitFullscreenElement || 
-              document.msFullscreenElement) {
-            btn.innerHTML = '✕';
-            btn.title = 'Exit Fullscreen';
-          } else {
-            btn.innerHTML = '⛶';
-            btn.title = 'Enter Fullscreen';
-          }
-        }
-      }
-    </script>
   </head>
-  
   <body>
-    <!-- Основной контейнер Unity -->
     <div id="unityContainer"></div>
-    
-    <!-- Все дополнительные элементы создаются динамически -->
   </body>
 </html>
