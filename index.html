@@ -3,18 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="HandheldFriendly" content="true">
-    <meta name="MobileOptimized" content="width">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
     <title>Unity WebGL Player | Coockie</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    
-    <!-- Адаптивные стили -->
-    <style>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      UnityLoader.instantiate("unityContainer", "Build/cooc.json");
+    </script>
+        <style>
       /* Сброс отступов */
       * {
         margin: 0;
@@ -103,7 +97,7 @@
         
         /* Скрываем элементы управления по умолчанию на мобильных */
         #unityContainer + div {
-          font-size: 8px !important;
+          font-size: 12px !important;
         }
       }
       
@@ -151,17 +145,17 @@
       
       .mobile-overlay h2 {
         margin-bottom: 20px;
-        font-size: 8px;
+        font-size: 24px;
       }
       
       .mobile-overlay p {
         margin-bottom: 15px;
-        font-size: 8px;
+        font-size: 16px;
         line-height: 1.5;
       }
       
       .rotate-icon {
-        font-size: 8px;
+        font-size: 48px;
         margin: 20px 0;
         animation: rotate 2s infinite;
       }
@@ -181,127 +175,8 @@
         }
       }
     </style>
-    
-    <script src="TemplateData/UnityProgress.js"></script>
-    <script src="Build/UnityLoader.js"></script>
   </head>
-  
   <body>
-
-    <div class="webgl-content">
-      <div id="unityContainer"></div>
-      <!-- Прогресс загрузки будет добавлен Unity -->
-    </div>
-    
-    <script>
-      // Адаптивная инициализация Unity
-      function initializeUnity() {
-        // Определяем параметры для разных устройств
-        var config = {
-          onProgress: UnityProgress,
-          Module: {
-            // Оптимизация для мобильных
-            onRuntimeInitialized: function() {
-              console.log("Unity runtime initialized");
-              // Скрываем мобильный оверлей после загрузки
-              hideMobileOverlay();
-            }
-          }
-        };
-        
-        // Добавляем параметры для мобильных устройств
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-          config.devicePixelRatio = window.devicePixelRatio || 1;
-          console.log("Mobile device detected, devicePixelRatio:", config.devicePixelRatio);
-        }
-        
-        // Запускаем Unity
-        var unityInstance = UnityLoader.instantiate("unityContainer", "Build/GameCenter.json", config);
-        
-        // Обработка изменения размера окна
-        window.addEventListener('resize', function() {
-          handleResize();
-        });
-        
-        // Обработка ориентации устройства
-        window.addEventListener('orientationchange', function() {
-          setTimeout(handleResize, 100);
-          checkOrientation();
-        });
-        
-        // Проверяем ориентацию при загрузке
-        setTimeout(checkOrientation, 500);
-        setTimeout(handleResize, 100);
-        
-        return unityInstance;
-      }
-      
-      // Обработчик изменения размера
-      function handleResize() {
-        var container = document.getElementById('unityContainer');
-        if (container && container.children.length > 0) {
-          var canvas = container.querySelector('canvas');
-          if (canvas) {
-            // Обновляем размер canvas
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-          }
-        }
-      }
-      
-      // Проверка ориентации устройства
-      function checkOrientation() {
-        var overlay = document.getElementById('mobileOverlay');
-        if (!overlay) return;
-        
-        // Показываем оверлей только на мобильных в портретной ориентации
-        if (window.innerHeight > window.innerWidth && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-          overlay.classList.add('active');
-        } else {
-          overlay.classList.remove('active');
-        }
-      }
-      
-      // Скрытие мобильного оверлея
-      function hideMobileOverlay() {
-        var overlay = document.getElementById('mobileOverlay');
-        if (overlay) {
-          overlay.classList.remove('active');
-        }
-      }
-      
-      // Предотвращаем масштабирование на мобильных (опционально)
-      document.addEventListener('touchmove', function(e) {
-        if(e.scale !== 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-      
-      document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-      });
-      
-      // Запускаем Unity после загрузки страницы
-      window.addEventListener('load', function() {
-        setTimeout(initializeUnity, 100);
-      });
-      
-      // Для iOS - предотвращаем bounce эффект
-      document.addEventListener('touchstart', function(e) {
-        if (e.touches.length > 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-      
-      document.addEventListener('touchend', function(e) {
-        if (e.touches.length > 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-      
-    </script>
-    
-    <!-- Запасной скрипт, если основной не сработал -->
-   
+    <div id="unityContainer" ></div>
   </body>
 </html>
