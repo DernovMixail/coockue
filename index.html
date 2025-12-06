@@ -304,14 +304,6 @@
     </script>
     
     <!-- Запасной скрипт, если основной не сработал -->
-    <script>
-      // Резервная инициализация через 2 секунды
-      setTimeout(function() {
-        if (typeof unityInstance === 'undefined') {
-          console.log("Fallback initialization");
-          unityInstance = UnityLoader.instantiate("unityContainer", "Build/GameCenter.json", {onProgress: UnityProgress});
-        }
-      }, 2000);
-    </script>
+ 
   </body>
 </html>
